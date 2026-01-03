@@ -1,0 +1,9 @@
+# Model weights through 5-fold cross validation in 02_blockwise_finetuning
+notebooks/02_blockwise_finetuning/DenseNet121/Weights
+notebooks/02_blockwise_finetuning/MobileNet/Weights
+notebooks/02_blockwise_finetuning/MobileNetV2/Weights
+notebooks/02_blockwise_finetuning/ResNet50/Weights
+notebooks/02_blockwise_finetuning/ResNet50V2/Weights
+notebooks/02_blockwise_finetuning/VGG16/Weights
+notebooks/02_blockwise_finetuning/VGG19/Weights
+notebooks/02_blockwise_finetuning/Xception/Weights
