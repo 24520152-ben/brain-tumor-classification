@@ -1,0 +1,1 @@
+# tinh metric cac thu o day nha thinu
