@@ -7,3 +7,5 @@ notebooks/02_blockwise_finetuning/ResNet50V2/Weights
 notebooks/02_blockwise_finetuning/VGG16/Weights
 notebooks/02_blockwise_finetuning/VGG19/Weights
 notebooks/02_blockwise_finetuning/Xception/Weights
+
+__pycache__
