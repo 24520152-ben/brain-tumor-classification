@@ -1,1 +1,0 @@
-# lam gi lam di thinu
