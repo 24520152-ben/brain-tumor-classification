@@ -9,3 +9,6 @@ notebooks/02_blockwise_finetuning/VGG19/Weights
 notebooks/02_blockwise_finetuning/Xception/Weights
 
 __pycache__
+
+.venv/
+venv/
