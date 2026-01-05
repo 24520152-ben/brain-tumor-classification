@@ -1,127 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>NeuroScan AI | Brain Tumor Diagnostic</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0f172a; color: #f8fafc; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-        .gradient-text { background: linear-gradient(90deg, #3b82f6, #2dd4bf); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .loader { border-top-color: #3b82f6; animation: spinner 1.5s linear infinite; }
-        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background: #0f172a;
+        color: #f8fafc;
+      }
+      .glass {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .gradient-text {
+        background: linear-gradient(90deg, #3b82f6, #2dd4bf);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .loader {
+        border-top-color: #3b82f6;
+        animation: spinner 1.5s linear infinite;
+      }
+      @keyframes spinner {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
     </style>
-</head>
-<body class="p-8">
+  </head>
+  <body class="p-8">
     <div class="max-w-6xl mx-auto">
-        <header class="flex justify-between items-center mb-10">
-            <div>
-                <h1 class="text-3xl font-bold gradient-text">NeuroScan AI</h1>
-                <p class="text-slate-400 text-sm">Hệ thống phân tích MRI u não bằng Deep Learning [5-Fold Cross Validation]</p>
-            </div>
-            <div class="glass px-4 py-2 rounded-full text-xs font-semibold text-teal-400">● SYSTEM ACTIVE</div>
-        </header>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div class="lg:col-span-5 space-y-6">
-                <div class="glass rounded-2xl p-6 transition-all hover:border-blue-500/50">
-                    <h3 class="text-lg font-semibold mb-4 flex items-center">
-                        <span class="mr-2">📁</span> Tải ảnh MRI (T1-CE)
-                    </h3>
-                    <label class="group relative flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-slate-700 rounded-xl cursor-pointer hover:bg-slate-800/50 transition-all">
-                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                            <svg class="w-10 h-10 mb-3 text-slate-500 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                            <p class="text-sm text-slate-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-                        </div>
-                        <input type="file" id="fileInput" class="hidden" accept="image/*" />
-                        <img id="preview" class="absolute inset-0 w-full h-full object-cover rounded-xl hidden" src="" />
-                    </label>
-                    <button id="analyzeBtn" disabled class="w-full mt-6 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-900/20">
-                        BẮT ĐẦU PHÂN TÍCH
-                    </button>
-                </div>
-            </div>
-
-            <div class="lg:col-span-7 space-y-6">
-                <div class="glass rounded-2xl p-6 min-h-[500px] flex flex-col items-center justify-center text-center relative overflow-hidden">
-                    <div id="loadingOverlay" class="hidden absolute inset-0 bg-slate-900/80 z-10 flex flex-col items-center justify-center">
-                        <div class="loader w-12 h-12 border-4 border-slate-700 rounded-full mb-4"></div>
-                        <p class="text-blue-400 font-medium">Đang chạy TTA & Ensemble...</p>
-                    </div>
-
-                    <div id="emptyState" class="text-slate-500">
-                        <p class="text-5xl mb-4">🧠</p>
-                        <p>Kết quả chẩn đoán và Grad-CAM sẽ hiển thị tại đây</p>
-                    </div>
-
-                    <div id="resultContent" class="hidden w-full space-y-6">
-                        <div class="relative inline-block mx-auto group">
-                            <img id="gradcam" class="rounded-xl border-4 border-slate-800 w-full max-w-md shadow-2xl" src="" />
-                            <div class="absolute top-2 left-2 bg-black/50 backdrop-blur px-2 py-1 rounded text-[10px]">GRAD-CAM XAI</div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-slate-800/50 p-4 rounded-xl text-left">
-                                <p class="text-slate-400 text-xs uppercase mb-1">Dự đoán</p>
-                                <p id="labelResult" class="text-xl font-bold text-teal-400">---</p>
-                            </div>
-                            <div class="bg-slate-800/50 p-4 rounded-xl text-left">
-                                <p class="text-slate-400 text-xs uppercase mb-1">Độ tin cậy</p>
-                                <p id="confResult" class="text-xl font-bold text-blue-400">0%</p>
-                            </div>
-                        </div>
-                        <p id="modelInfo" class="text-[10px] text-slate-500 italic"></p>
-                    </div>
-                </div>
-            </div>
+      <header class="flex justify-between items-center mb-10">
+        <div>
+          <h1 class="text-3xl font-bold gradient-text">NeuroScan AI</h1>
+          <p class="text-slate-400 text-sm">
+            Hệ thống phân tích MRI u não bằng Deep Learning [5-Fold Cross
+            Validation]
+          </p>
         </div>
+        <div
+          class="glass px-4 py-2 rounded-full text-xs font-semibold text-teal-400"
+        >
+          ● SYSTEM ACTIVE
+        </div>
+      </header>
+
+      <div
+        id="mainGrid"
+        class="grid grid-cols-1 lg:grid-cols-12 gap-8 transition-all duration-700 ease-in-out w-full"
+      >
+        <!-- UPLOAD -->
+        <div
+          id="uploadPanel"
+          class="lg:col-span-5 lg:col-start-1 lg:col-end-13 flex justify-center"
+        >
+          <div class="w-full max-w-md glass rounded-2xl p-6 space-y-4">
+            <h3 class="font-semibold text-lg">📁 Tải ảnh MRI (T1-CE)</h3>
+
+            <label
+              for="fileInput"
+              class="h-60 w-full bg-black rounded-xl flex items-center justify-center cursor-pointer border border-dashed border-slate-700 hover:border-blue-500 transition overflow-hidden relative"
+            >
+              <img id="preview" class="hidden w-full h-full object-cover" />
+              <span
+                id="uploadPlaceholder"
+                class="text-slate-500 text-sm text-center px-4"
+              >
+                Chưa có ảnh được tải lên<br />
+                <span class="text-xs opacity-70">(Click để chọn ảnh MRI)</span>
+              </span>
+            </label>
+
+            <input id="fileInput" type="file" accept="image/*" hidden />
+            <button
+              id="analyzeBtn"
+              disabled
+              class="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 py-3 rounded-xl font-semibold transition"
+            >
+              BẮT ĐẦU PHÂN TÍCH
+            </button>
+          </div>
+        </div>
+
+        <!-- RESULT -->
+        <div
+          id="resultPanel"
+          class="hidden opacity-0 transition-opacity duration-300 lg:col-span-12"
+        >
+          <div class="glass rounded-2xl p-8 relative">
+            <button
+              id="resetBtn"
+              class="absolute top-4 left-4 w-10 h-10 flex items-center bg-slate-800/80 hover:bg-slate-700 rounded-full overflow-hidden transition-all duration-300 group hover:w-[110px]"
+            >
+              <span
+                class="w-10 h-10 flex items-center justify-center text-lg shrink-0"
+              >
+                ✕
+              </span>
+              <span
+                class="opacity-0 group-hover:opacity-100 whitespace-nowrap transition-opacity duration-200 text-sm pr-4"
+              >
+                Reset
+              </span>
+            </button>
+
+            <div
+              id="loading"
+              class="hidden absolute inset-0 bg-slate-900/80 flex items-center justify-center text-blue-400 text-lg rounded-2xl"
+            >
+              🔄 Đang phân tích…
+            </div>
+
+            <!-- Result content -->
+            <div id="resultContent" class="space-y-6">
+              <div
+                class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-xl mx-auto"
+              >
+                <div class="flex flex-col items-center space-y-2">
+                  <div
+                    class="w-full max-w-[360px] aspect-square rounded-2xl border border-slate-700 flex items-center justify-center overflow-hidden bg-black mx-auto"
+                  >
+                    <img
+                      id="originalImage"
+                      class="w-full h-full object-contain"
+                    />
+                  </div>
+                  <span class="text-xs text-slate-400">ẢNH GỐC</span>
+                </div>
+
+                <div class="flex flex-col items-center space-y-2">
+                  <div
+                    class="w-full max-w-[360px] aspect-square rounded-2xl border border-slate-700 flex items-center justify-center overflow-hidden bg-black mx-auto"
+                  >
+                    <img id="gradcam" class="w-full h-full object-contain" />
+                  </div>
+                  <span class="text-xs text-slate-400">GRAD-CAM</span>
+                </div>
+              </div>
+
+              <div
+                class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-xl mx-auto"
+              >
+                <div class="bg-slate-800/60 p-4 rounded-xl text-center">
+                  <p class="text-xs text-slate-400 mb-1">Dự đoán</p>
+                  <p id="labelResult" class="text-xl font-bold text-teal-400">
+                    ---
+                  </p>
+                </div>
+
+                <div class="bg-slate-800/60 p-4 rounded-xl text-center">
+                  <p class="text-xs text-slate-400 mb-1">Độ tin cậy</p>
+                  <p id="confResult" class="text-xl font-bold text-blue-400">
+                    0%
+                  </p>
+                </div>
+              </div>
+
+              <p
+                id="modelInfo"
+                class="text-xs text-slate-500 italic text-center"
+              ></p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script>
-        const fileInput = document.getElementById('fileInput');
-        const preview = document.getElementById('preview');
-        const analyzeBtn = document.getElementById('analyzeBtn');
-        const loading = document.getElementById('loadingOverlay');
-        const emptyState = document.getElementById('emptyState');
-        const resultContent = document.getElementById('resultContent');
+    //   State
+      let originalImageState = null;
 
-        fileInput.onchange = evt => {
-            const [file] = fileInput.files;
-            if (file) {
-                preview.src = URL.createObjectURL(file);
-                preview.classList.remove('hidden');
-                analyzeBtn.disabled = false;
-            }
-        }
+      const uploadPanel = document.getElementById("uploadPanel");
+      const resultPanel = document.getElementById("resultPanel");
 
-        analyzeBtn.onclick = async () => {
-            const file = fileInput.files[0];
-            const formData = new FormData();
-            formData.append('file', file);
+      const fileInput = document.getElementById("fileInput");
+      const preview = document.getElementById("preview");
+      const placeholder = document.getElementById("uploadPlaceholder");
+      const analyzeBtn = document.getElementById("analyzeBtn");
 
-            loading.classList.remove('hidden');
-            analyzeBtn.disabled = true;
+      const loading = document.getElementById("loading");
+      const resetBtn = document.getElementById("resetBtn");
 
-            try {
-                const response = await fetch('http://localhost:8000/predict', { method: 'POST', body: formData });
-                const data = await response.json();
+      const originalImage = document.getElementById("originalImage");
+      const gradcam = document.getElementById("gradcam");
+      const labelResult = document.getElementById("labelResult");
+      const confResult = document.getElementById("confResult");
+      const modelInfo = document.getElementById("modelInfo");
 
-                if (response.ok) {
-                    emptyState.classList.add('hidden');
-                    resultContent.classList.remove('hidden');
-                    document.getElementById('gradcam').src = `data:image/jpeg;base64,${data.overlay_image_base64}`;
-                    document.getElementById('labelResult').innerText = data.prediction;
-                    document.getElementById('confResult').innerText = (data.confidence * 100).toFixed(2) + '%';
-                    document.getElementById('modelInfo').innerText = `Phân tích dựa trên trọng số tối ưu từ ${data.used_model_for_gradcam}`;
-                }
-            } catch (error) {
-                alert('Lỗi kết nối Server!');
-            } finally {
-                loading.classList.add('hidden');
-                analyzeBtn.disabled = false;
-            }
-        };
+      fileInput.onchange = () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        originalImageState = URL.createObjectURL(file);
+
+        preview.src = originalImageState;
+        preview.classList.remove("hidden");
+        placeholder.classList.add("hidden");
+
+        analyzeBtn.disabled = false;
+      };
+
+      analyzeBtn.onclick = async () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const resultContent = document.getElementById("resultContent");
+
+        uploadPanel.classList.add("opacity-0", "-translate-y-4", "scale-95");
+
+        setTimeout(async () => {
+          uploadPanel.classList.add("hidden");
+
+          resultPanel.classList.remove("hidden");
+          requestAnimationFrame(() => {
+            resultPanel.classList.add("opacity-100");
+          });
+
+          resultContent.classList.add("hidden");
+          loading.classList.remove("hidden");
+
+          const formData = new FormData();
+          formData.append("file", file);
+
+          try {
+            const res = await fetch("http://localhost:8000/predict", {
+              method: "POST",
+              body: formData,
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || "Predict error");
+
+            originalImage.src = originalImageState;
+            gradcam.src = `data:image/jpeg;base64,${data.overlay_image_base64}`;
+            labelResult.innerText = data.prediction;
+            confResult.innerText = (data.confidence * 100).toFixed(2) + "%";
+            modelInfo.innerText = `Phân tích dựa trên trọng số tối ưu từ ${data.used_model_for_gradcam}`;
+
+            loading.classList.add("hidden");
+            resultContent.classList.remove("hidden");
+            resultContent.classList.add("opacity-0");
+
+            requestAnimationFrame(() => {
+              resultContent.classList.add("transition-opacity", "duration-300");
+              resultContent.classList.remove("opacity-0");
+            });
+          } catch (err) {
+            alert(err.message);
+            resetUI();
+          }
+        }, 300);
+      };
+
+      function resetUI() {
+        originalImage.src = "";
+        gradcam.src = "";
+        labelResult.innerText = "---";
+        confResult.innerText = "0%";
+        modelInfo.innerText = "";
+
+        resultPanel.classList.add("hidden");
+        uploadPanel.classList.remove(
+          "hidden",
+          "opacity-0",
+          "-translate-x-10",
+          "scale-95"
+        );
+
+        preview.classList.add("hidden");
+        placeholder.classList.remove("hidden");
+        fileInput.value = "";
+        analyzeBtn.disabled = true;
+      }
+
+      resetBtn.onclick = resetUI;
     </script>
-</body>
+  </body>
 </html>
