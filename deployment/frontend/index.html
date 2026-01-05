@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>NeuroScan AI | Brain Tumor Diagnostic</title>
+    <title>Brain Tumor Diagnostic</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
@@ -42,10 +42,9 @@
     <div class="max-w-6xl mx-auto">
       <header class="flex justify-between items-center mb-10">
         <div>
-          <h1 class="text-3xl font-bold gradient-text">NeuroScan AI</h1>
+          <h1 class="text-3xl font-bold gradient-text">Brain Tumor Diagnostic</h1>
           <p class="text-slate-400 text-sm">
-            Hệ thống phân tích MRI u não bằng Deep Learning [5-Fold Cross
-            Validation]
+            Hệ thống phân tích MRI u não bằng Deep Learning
           </p>
         </div>
         <div
@@ -65,7 +64,7 @@
           class="lg:col-span-5 lg:col-start-1 lg:col-end-13 flex justify-center"
         >
           <div class="w-full max-w-md glass rounded-2xl p-6 space-y-4">
-            <h3 class="font-semibold text-lg">📁 Tải ảnh MRI (T1-CE)</h3>
+            <h3 class="font-semibold text-lg">📁 Tải ảnh MRI</h3>
 
             <label
               for="fileInput"
@@ -245,7 +244,7 @@
             gradcam.src = `data:image/jpeg;base64,${data.overlay_image_base64}`;
             labelResult.innerText = data.prediction;
             confResult.innerText = (data.confidence * 100).toFixed(2) + "%";
-            modelInfo.innerText = `Phân tích dựa trên trọng số tối ưu từ ${data.used_model_for_gradcam}`;
+            modelInfo.innerText = `Phân tích dựa trên mô hình ${data.used_model_for_gradcam}`;
 
             loading.classList.add("hidden");
             resultContent.classList.remove("hidden");
