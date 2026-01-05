@@ -20,7 +20,7 @@ app.include_router(api_router)
 
 @app.get("/")
 async def read_index():
-    index_path = os.path.join(CURRENT_DIR, "index.html")
+    index_path = os.path.join(CURRENT_DIR, 'frontend', 'index.html')
     return FileResponse(index_path)
 
 if __name__ == "__main__":
